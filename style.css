@@ -21,20 +21,24 @@ img#logo {
 }
 
 img#robot {
+    transition: opacity ease-out 1s;
     position: absolute;
     bottom: 0px;
     left: 45vw;
     transform: translateX(-50%);
     height: 90vh;
+    opacity: 0;
 }
 
 div#text {
+    transition: transform ease-out 0.7s, opacity ease-out 1s;
     position: absolute;
     bottom: calc(90vh * 0.35 + 80px);
     left: calc(45vw + 90vh * 1.6 / 3.5);
-    transform: translateX(-50%);
+    transform: translate(-50%, 70px);
     display: block;
     text-align: center;
+    opacity: 0;
 }
 
 div#text > p {
