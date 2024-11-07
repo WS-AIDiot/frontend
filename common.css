@@ -1,0 +1,14 @@
+* {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+a {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+body {
+    background-color: #1A1A1D;
+}
