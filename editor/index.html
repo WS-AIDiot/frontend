@@ -1,13 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="style.css">
     <title>Editor</title>
 </head>
+
 <body>
-    <h1>Editor</h1>
+    <div id="tabs">
+        <div id="tab" class="active">
+            <h1>Documents</h1>
+        </div>
+        <div id="tab">
+            <h1>Data Sources</h1>
+        </div>
+        <div id="tab">
+            <h1>Build</h1>
+        </div>
+    </div>
+    <div id="editor"></div>
 </body>
+
 </html>
