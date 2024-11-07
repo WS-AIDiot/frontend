@@ -7,22 +7,27 @@
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
     <title>Editor</title>
 </head>
 
 <body>
     <div id="tabs">
-        <div id="tab" class="active">
+        <div class="tab active">
             <h1>Documents</h1>
         </div>
-        <div id="tab">
+        <div class="tab">
             <h1>Data Sources</h1>
         </div>
-        <div id="tab">
+        <div class="tab">
             <h1>Build</h1>
         </div>
     </div>
-    <div id="editor"></div>
+    <div id="editors">
+        <div class="editor active">Documents Editor</div>
+        <div class="editor">Data Sources Editor</div>
+        <div class="editor">Build Editor</div>
+    </div>
 </body>
 
 </html>

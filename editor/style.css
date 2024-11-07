@@ -4,7 +4,8 @@ div#tabs {
     padding: 20px 60px 0px 60px;
 }
 
-div#tab {
+div.tab {
+    cursor: pointer;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -13,11 +14,11 @@ div#tab {
     height: 50px;
     background-color: #2d2d30;
 }
-div#tab.active {
+div.tab.active {
     background-color: #4e4e50;
 }
 
-div#tab > h1 {
+div.tab > h1 {
     display: inline-block;
     width: 30vw;
 
@@ -28,7 +29,15 @@ div#tab > h1 {
 }
 
 
-div#editor {
+div#editors {
     min-height: calc(100vh - 20px - 50px);
     background-color: #4e4e50;
+}
+
+div.editor {
+    display: none;
+}
+
+div.editor.active {
+    display: block;
 }
