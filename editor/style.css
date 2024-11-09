@@ -1,7 +1,15 @@
+body {
+    background-color: #4e4e50;
+}
+
+
 div#tabs {
     display: flex;
     justify-content: space-between;
-    padding: 20px 60px 0px 60px;
+    align-items: end;
+    padding: 0px 60px;
+    height: 70px;
+    background-color: #1A1A1D;
 }
 
 div.tab {
@@ -44,15 +52,18 @@ div.editor.active {
 
 
 div#upload_button_container {
-    display: inline-block;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+
     margin-bottom: 15px;
-    width: 100vw;
+    height: 80px;
+    padding-right: 45px;
     border-bottom: 1px solid #fff;
 }
 
 button#upload {
-    float: right;
-    margin: 15px 45px;
     width: 115px;
     height: 45px;
     background-color: #d03f41;
@@ -62,6 +73,9 @@ button#upload {
 }
 
 
+div#documents {
+    height: calc(100vh - 70px - 80px);
+}
 div.document {
     display: flex;
     align-items: center;
