@@ -45,6 +45,7 @@ div.editor.active {
 
 div#upload_button_container {
     display: inline-block;
+    margin-bottom: 15px;
     width: 100vw;
     border-bottom: 1px solid #fff;
 }
@@ -60,5 +61,50 @@ button#upload {
     background-color: #d03f41;
     font-weight: 500;
     font-size: 24px;
+    color: #fff;
+}
+
+
+div.document {
+    display: flex;
+    align-items: center;
+    width: 76vw;
+    margin: 0 12vw 10px 12vw;
+}
+
+div.document > img {
+    width: 50px;
+    height: 50px;
+}
+div.document > div.captions {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 100px 0px 75px;
+    width: 57vw;
+}
+
+div.document > div.captions > * {
+    display: inline-block;
+    font-weight: 500;
+}
+div.document > div.captions > h2 {
+    font-size: 24px;
+    color: #fff;
+}
+div.document > div.captions > p {
+    font-size: 20px;
+    color: #2d2d30;
+}
+
+div.document > button {
+    display: inline-block;
+    border: 0px;
+    border-radius: 15px;
+    width: 140px;
+    height: 40px;
+
+    background-color: #2d2d30;
+    font-size: 22px;
     color: #fff;
 }
