@@ -38,7 +38,7 @@ div.tab > h1 {
 
 
 div#editors {
-    min-height: calc(100vh - 20px - 50px);
+    height: calc(100vh - 70px - 10vh);
     background-color: #4e4e50;
 }
 
@@ -57,7 +57,6 @@ div#upload_button_container {
     justify-content: end;
     align-items: center;
 
-    margin-bottom: 15px;
     height: 80px;
     padding-right: 45px;
     border-bottom: 1px solid #fff;
@@ -74,7 +73,9 @@ button#upload {
 
 
 div#documents {
-    height: calc(100vh - 70px - 80px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-top: 15px;
 }
 div.document {
     display: flex;
@@ -160,4 +161,48 @@ div#action_block > div.buttons > button#delete {
 }
 button#selected {
     opacity: 0.7;
+}
+
+
+footer {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+    border-top: 1px solid #fff;
+    padding: 0px 25px;
+}
+
+div#footer_info_container {
+    display: inline-flex;
+    align-items: center;
+}
+div#footer_info_container > div {
+    display: inline-block;
+}
+div#footer_document {
+    margin-right: 15px;
+}
+
+div#footer_info_container p {
+    display: inline-block;
+    color: #fff;
+}
+div#footer_info_container p.caption {
+    font-size: 24px;
+}
+div#footer_info_container p.label {
+    border-radius: 10px;
+    padding: 5px 12px;
+    background-color: #2d2d30;
+    font-size: 20px;
+}
+
+button#build {
+    width: 115px;
+    height: 40px;
+    background-color: #2d2d30;
+    font-size: 24px;
+    color: #fff;
 }
