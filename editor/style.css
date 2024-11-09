@@ -51,11 +51,8 @@ div#upload_button_container {
 }
 
 button#upload {
-    cursor: pointer;
     float: right;
     margin: 15px 45px;
-    border: 0px;
-    border-radius: 15px;
     width: 115px;
     height: 45px;
     background-color: #d03f41;
@@ -98,9 +95,6 @@ div.document > div.captions > p {
 }
 
 div.document > button {
-    display: inline-block;
-    border: 0px;
-    border-radius: 15px;
     width: 140px;
     height: 40px;
 

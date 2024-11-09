@@ -35,12 +35,10 @@ div#text > p {
 }
 
 div#text > button {
-    cursor: pointer;
     margin-top: 54px;
-    border: 0px;
-    border-radius: 15px;
     width: 180px;
     height: 70px;
+
     background-color: #ed201f;
     font-weight: 500;
     font-size: 40px;

@@ -12,3 +12,10 @@ a {
 body {
     background-color: #1A1A1D;
 }
+
+button {
+    cursor: pointer;
+    display: inline-block;
+    border: 0px;
+    border-radius: 15px;
+}
