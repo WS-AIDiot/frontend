@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset</title>
+    <script>
+        window.addEventListener("load", (ev) => {
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                document.body.innerHTML += `${key}: ${localStorage.getItem(key)}<br>`;
+            }
+            localStorage.clear();
+            document.body.innerHTML += "Cleared!";
+        });
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
