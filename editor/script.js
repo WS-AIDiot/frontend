@@ -12,6 +12,26 @@ window.local_storage = {
 };
 
 
+class MockResult {
+    constructor(result) {
+        this.result = result;
+    };
+
+    json() {
+        return new Promise((resolve, reject) => {
+            resolve(this.result);
+        });
+    }
+}
+
+
+function mock_fetch(result) {
+    return new Promise((resolve, reject) => {
+        resolve(new MockResult(result));
+    });
+}
+
+
 window.addEventListener("load", () => {
     let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");
