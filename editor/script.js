@@ -46,4 +46,37 @@ window.addEventListener("load", () => {
             editors[i].classList.add("active");
         });
     }
+
+    let documents_element = document.getElementById("documents");
+    (() => {
+        if (window.ENV === "static") {
+            return mock_fetch(window.local_storage.get("documents", []));
+        } else {
+            alert("TODO");
+        }
+    })().then(response => {
+        return response.json();
+    }).then((json) => {
+        for (const document of json) {
+            console.log(document);
+            documents_element.innerHTML += `
+            <div class="document">
+                <img src="doc_icon.png" alt="Document Icon">
+                <div class="captions">
+                    <h2 class="title">${document.filename}</h2>
+                    <p class="date">${document.uploaded_at}</p>
+                </div>
+                <button class="select">Select</button>
+            </div>`;
+        }
+    });
+
+    let upload = document.getElementById("upload");
+    upload.addEventListener("change", (ev) => {
+        let filename = upload.value.split("\\")[2];
+        let documents = window.local_storage.get("documents", []);
+        documents.unshift({ "filename": filename, "uploaded_at": new Date() });
+        window.local_storage.set("documents", documents);
+        location.reload();
+    });
 });
