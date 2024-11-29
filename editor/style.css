@@ -1,5 +1,25 @@
 body {
-    background-color: #4e4e50;
+    background-color: #1A1A1D;
+}
+
+
+div#profile {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+}
+div#profile h1 {
+    display: inline-block;
+    margin-right: 10px;
+    color: #fff;
+}
+div#profile img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 5px;
 }
 
 
@@ -7,9 +27,9 @@ div#tabs {
     display: flex;
     justify-content: space-between;
     align-items: end;
+    margin-top: 50px;
     padding: 0px 60px;
-    height: 70px;
-    background-color: #1A1A1D;
+    height: 60px;
 }
 
 div.tab {
@@ -38,7 +58,7 @@ div.tab > h1 {
 
 
 div#editors {
-    height: calc(100vh - 70px - 10vh);
+    height: calc(100vh - 50px - 60px - 10vh);
     background-color: #4e4e50;
 }
 
@@ -182,6 +202,7 @@ footer {
     height: 10vh;
     border-top: 1px solid #fff;
     padding: 0px 25px;
+    background-color: #4e4e50;
 }
 
 div#footer_info_container {

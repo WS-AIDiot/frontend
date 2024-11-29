@@ -38,7 +38,7 @@ window.addEventListener("load", () => {
         if (window.ENV.ENV === "static") {
             return mock_fetch(window.local_storage.get("documents", []));
         } else {
-            alert("TODO");
+            // alert("TODO");
         }
     })().then(response => {
         return response.json();
@@ -65,4 +65,17 @@ window.addEventListener("load", () => {
         window.local_storage.set("documents", documents);
         location.reload();
     });
+
+    window.prepare_gapi().then(gapi => {
+        gapi.client.drive.about.get({
+            "fields": "user",
+        }).then(response => {
+            const user = response.result.user;
+            console.log(user);
+            document.getElementById("profile").innerHTML = `
+                <h1>${user.displayName}</h1>
+                <img src="${user.photoLink}" alt="Profile picture">
+            `;
+        });
+    })
 });
