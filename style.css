@@ -37,8 +37,8 @@ div#text > p {
     text-align: center;
     color: #fff;
 }
-
-div#text > button {
+button#try_it {
+    transition: opacity 1s;
     margin-top: 54px;
     width: 180px;
     height: 70px;
@@ -47,4 +47,8 @@ div#text > button {
     font-weight: 500;
     font-size: 40px;
     color: #fff;
+}
+button.wait {
+    cursor: wait;
+    opacity: 0.3;
 }

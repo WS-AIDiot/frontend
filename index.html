@@ -7,11 +7,36 @@
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="common/common.css">
+    <script src="/env.js"></script>
+    <script src="/common/local_storage.js"></script>
+    <script async defer src="https://accounts.google.com/gsi/client"></script>
     <script>
         window.addEventListener("load", (ev) => {
             document.getElementById("robot").style.opacity = "1";
             document.getElementById("text").style.transform = "translate(-50%)";
             document.getElementById("text").style.opacity = "1";
+
+            console.log("gis loaded");
+            const token_client = google.accounts.oauth2.initTokenClient({
+                client_id: window.ENV.GAPI_CONFIG.CLIENT_ID,
+                scope: window.ENV.GAPI_CONFIG.SCOPE,
+                callback: async response => {
+                    console.log("authorized", response);
+
+                    let user = window.local_storage.get("user", {});
+                    user.access_token = response.access_token;
+                    window.local_storage.set("user", user);
+
+                    window.location.pathname = "/editor";
+                },
+            });
+            console.log("token_client inited");
+            const try_it_button = document.getElementById("try_it");
+            try_it_button.addEventListener("click", () => {
+                token_client.requestAccessToken();
+            });
+            try_it_button.classList.remove("wait");
+            console.log("auth ready...");
         });
     </script>
     <title>AIDiot</title>
@@ -23,7 +48,7 @@
     <div id="text">
         <p>AI-based document<br>generation</p>
         <br>
-        <button><a href="editor">Try it</a></button>
+        <button id="try_it" class="wait">Try it</button>
     </div>
 </body>
 

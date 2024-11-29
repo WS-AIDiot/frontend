@@ -35,7 +35,7 @@ window.addEventListener("load", () => {
 
     let documents_element = document.getElementById("documents");
     (() => {
-        if (window.ENV === "static") {
+        if (window.ENV.ENV === "static") {
             return mock_fetch(window.local_storage.get("documents", []));
         } else {
             alert("TODO");
