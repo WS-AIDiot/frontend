@@ -66,6 +66,55 @@ async function load_user_info() {
 };
 
 
+const FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
+
+
+async function get_folder_id(folder_name, parent_folder_id, force = true) {
+    let response = await gapi.client.drive.files.list({
+        "q": `
+            "me" in owners and
+            mimeType="${FOLDER_MIME_TYPE}" and
+            trashed = false and
+            "${parent_folder_id}" in parents and
+            name = "${folder_name}"
+        `,
+        "fields": "files(id)",
+    });
+    console.log(response);
+
+    if (response.result.files.length == 0) {
+        if (force) {
+            console.log(`Folder "${folder_name}" not found -> creating one...`);
+            response = await gapi.client.drive.files.create({
+                "mimeType": FOLDER_MIME_TYPE,
+                "name": folder_name,
+                "fields": "id",
+                "parents": [parent_folder_id],
+            });
+            console.log(response);
+            return response.result.id;
+        }
+        return null;
+    }
+    if (response.result.files.length > 1) {
+        await popup("Error!", `More than one "${folder_name}" folder`);
+    }
+
+    return response.result.files[0].id;
+};
+
+
+async function basic_layout_in_google_drive() {
+    const ai_diot_folder_id = await get_folder_id("ai-diot", "root");
+    return Promise.all([
+        get_folder_id("1. raw_docs", ai_diot_folder_id),
+        get_folder_id("2.1. templates", ai_diot_folder_id),
+        get_folder_id("2.2. data_templates", ai_diot_folder_id),
+        get_folder_id("3. results", ai_diot_folder_id),
+    ]);
+};
+
+
 window.addEventListener("load", async () => {
     let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");
@@ -116,7 +165,16 @@ window.addEventListener("load", async () => {
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
         await window.prepare_gapi();
-        await load_user_info();
+        await Promise.all([
+            load_user_info(),
+            (async () => {
+                const ids = await basic_layout_in_google_drive();
+                const raw_docs_folder_id = ids[0],
+                    templates_folder_id = ids[1],
+                    data_templates_folder_id = ids[2],
+                    results_folder_id = ids[3];
+            })(),
+        ]);
         resolve();
     }));
 });
