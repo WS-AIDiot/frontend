@@ -18,6 +18,34 @@ function mock_fetch(result) {
 }
 
 
+async function popup(title, message = null, message_tag = "p", awaitable = null) {
+    let popup = document.createElement("div");
+    popup.id = "popup_container";
+    popup.innerHTML = `
+        <div id="popup">
+            <h1>${title}</h1>
+            ${(message === null) ? "" : `<${message_tag}>${message}</${message_tag}>`}
+            ${(awaitable === null) ? "<button>Close</button>" : ""}
+        </div>
+    `;
+
+    if (awaitable === null) {
+        let button = popup.querySelector("button");
+        awaitable = new Promise((resolve, reject) => {
+            popup.addEventListener("click", (ev) => {
+                if (ev.target == button || ev.target == popup) resolve();
+            });
+        });
+    }
+
+    document.body.style.overflow = "hidden";
+    document.body.appendChild(popup);
+    await awaitable;
+    document.body.removeChild(popup);
+    document.body.style.overflow = "auto";
+};
+
+
 window.addEventListener("load", () => {
     let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");

@@ -3,6 +3,56 @@ body {
 }
 
 
+div#popup_container {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div#popup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 15px;
+    width: 35vw;
+    background-color: #2d2d30;
+}
+
+div#popup * {
+    color: white;
+}
+div#popup h1 {
+    font-size: 30px;
+}
+div#popup p, div#popup pre {
+    margin-top: 15px;
+    font-size: 15px;
+}
+div#popup p {
+    text-align: center;
+}
+div#popup pre {
+    overflow: auto;
+    width: 100%;
+    max-height: 30vh;
+}
+div#popup button {
+    margin-top: 15px;
+    padding: 5px 15px;
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+
 div#profile {
     position: absolute;
     top: 0;
