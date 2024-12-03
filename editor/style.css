@@ -105,6 +105,7 @@ label#upload_label {
 div#documents {
     overflow-y: auto;
     box-sizing: border-box;
+    height: calc(100vh - 50px - 60px - 80px - 10vh);
     padding-top: 15px;
 }
 div.document {
