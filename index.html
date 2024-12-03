@@ -27,7 +27,7 @@
                     user.access_token = response.access_token;
                     window.local_storage.set("user", user);
 
-                    window.location.pathname = "/editor";
+                    window.location.pathname += "editor";
                 },
             });
             console.log("token_client inited");
