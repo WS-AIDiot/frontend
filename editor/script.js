@@ -46,7 +46,27 @@ async function popup(title, message = null, message_tag = "p", awaitable = null)
 };
 
 
-window.addEventListener("load", () => {
+async function load_user_info() {
+    let response;
+    try {
+        response = await gapi.client.drive.about.get({
+            "fields": "user",
+        });
+    } catch (error) {
+        error = error.result.error;
+        await popup("Error", JSON.stringify(error, null, 4), "pre");
+        if (error.code === 401 && error.status === "UNAUTHENTICATED") window.location.pathname = "/";
+    };
+    const user = response.result.user;
+    console.log(user);
+    document.getElementById("profile").innerHTML = `
+        <h1>${user.displayName}</h1>
+        <img src="${user.photoLink}" alt="Profile picture">
+    `;
+};
+
+
+window.addEventListener("load", async () => {
     let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");
     let editors = document.getElementsByClassName("editor");
@@ -94,16 +114,9 @@ window.addEventListener("load", () => {
         location.reload();
     });
 
-    window.prepare_gapi().then(gapi => {
-        gapi.client.drive.about.get({
-            "fields": "user",
-        }).then(response => {
-            const user = response.result.user;
-            console.log(user);
-            document.getElementById("profile").innerHTML = `
-                <h1>${user.displayName}</h1>
-                <img src="${user.photoLink}" alt="Profile picture">
-            `;
-        });
-    })
+    await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
+        await window.prepare_gapi();
+        await load_user_info();
+        resolve();
+    }));
 });
