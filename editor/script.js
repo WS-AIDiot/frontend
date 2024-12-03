@@ -115,6 +115,100 @@ async function basic_layout_in_google_drive() {
 };
 
 
+class Document {
+    constructor(id, name, modified_time) {
+        this.id = id;
+        this.name = name;
+        this.modified_time = modified_time;
+
+        this.view = this.get_view();
+        this.detailed_view = this.get_detailed_view();
+    }
+
+    get_view() {
+        let view = document.createElement("div");
+        view.classList.add("document");
+        view.innerHTML = `
+            <img src="doc_icon.png" alt="Document Icon">
+            <div class="captions">
+                <h2 class="title">${this.name}</h2>
+                <p class="date">${this.modified_time}</p>
+            </div>
+            <button class="select">Select</button>
+        `;
+        return view;
+    }
+
+    get_detailed_view() {
+        let view = document.createElement("div");
+        view.id = "detailed";
+        view.classList.add("document");
+        view.innerHTML = `
+            <img src="doc_icon.png" alt="Document Icon">
+            <div id="action_block">
+                <div class="captions">
+                    <h2 class="title">${this.name}</h2>
+                    <p class="date">${this.modified_time}</p>
+                </div>
+                <div class="buttons">
+                    <button>
+                        <a href="https://docs.google.com/document/d/${this.id}" target="_blank">Edit</a>
+                    </button>
+                    <button>Process</button>
+                    <button>Process with data</button>
+                    <button id="delete">Delete</button>
+                </div>
+            </div>
+            <button class="select">Select</button>
+        `;
+        let buttons = view.getElementsByClassName("buttons")[0].getElementsByTagName("button");
+        buttons[1].addEventListener("click", () => {alert("ToDo")});
+        buttons[2].addEventListener("click", () => {alert("ToDo")});
+        buttons[3].addEventListener("click", () => {alert("ToDo")});
+        return view;
+    }
+};
+
+
+class Documents {
+    constructor() {
+        this.detailed = null;
+        this.node = document.getElementById("documents");
+    }
+
+    append_child(doc) {
+        doc.view.addEventListener("click", () => {this.set_detailed(doc)});
+        this.node.appendChild(doc.view);
+    }
+
+    set_detailed(doc) {
+        if (this.detailed !== null) {
+            this.node.replaceChild(this.detailed.view, this.detailed.detailed_view);
+        }
+        this.node.replaceChild(doc.detailed_view, doc.view);
+        this.detailed = doc;
+    }
+};
+
+
+async function list_documents(raw_docs_folder_id) {
+    let response = await gapi.client.drive.files.list({
+        "q": `
+            "me" in owners and
+            trashed = false and
+            "${raw_docs_folder_id}" in parents
+        `,
+        "fields": "files(id, name, modifiedTime)",
+    });
+    console.log(response);
+    let documents = new Documents();
+    for (const file of response.result.files) {
+        console.log(file);
+        documents.append_child(new Document(file.id, file.name, file.modifiedTime));
+    };
+}
+
+
 window.addEventListener("load", async () => {
     let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");
@@ -173,6 +267,7 @@ window.addEventListener("load", async () => {
                     templates_folder_id = ids[1],
                     data_templates_folder_id = ids[2],
                     results_folder_id = ids[3];
+                await list_documents(raw_docs_folder_id);
             })(),
         ]);
         resolve();
