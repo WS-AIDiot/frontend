@@ -209,6 +209,45 @@ async function list_documents(raw_docs_folder_id) {
 }
 
 
+async function handle_upload_file(raw_docs_folder_id) {
+    document.getElementById("upload").addEventListener("change", async () => {
+        await popup("Uploading file...", "Please wait", "p", new Promise(async () => {
+            const file = upload.files[0];
+            console.log("Uploading file:", file.type, file.name);
+
+            const form = new FormData();
+            form.append("metadata", new Blob(
+                [
+                    JSON.stringify({
+                        "parents": [raw_docs_folder_id],
+                        "mimeType": file.type,
+                        "name": file.name,
+                        "fields": "id",
+                    }),
+                ],
+                { type: "application/json" },
+            ));
+            form.append("file", file);
+
+            let response = await fetch(
+                "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+                {
+                    method: "POST",
+                    headers: new Headers({
+                        "Authorization": "Bearer " + gapi.auth.getToken().access_token
+                    }),
+                    body: form,
+                }
+            );
+            response = await response.json();
+            console.log(response);
+
+            location.reload();
+        }));
+    });
+};
+
+
 window.addEventListener("load", async () => {
     let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");
@@ -224,15 +263,6 @@ window.addEventListener("load", async () => {
         });
     }
 
-    let upload = document.getElementById("upload");
-    upload.addEventListener("change", (ev) => {
-        let filename = upload.value.split("\\")[2];
-        let documents = window.local_storage.get("documents", []);
-        documents.unshift({ "filename": filename, "uploaded_at": new Date() });
-        window.local_storage.set("documents", documents);
-        location.reload();
-    });
-
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
         await window.prepare_gapi();
         await Promise.all([
@@ -243,7 +273,10 @@ window.addEventListener("load", async () => {
                     templates_folder_id = ids[1],
                     data_templates_folder_id = ids[2],
                     results_folder_id = ids[3];
-                await list_documents(raw_docs_folder_id);
+                await Promise.all([
+                    list_documents(raw_docs_folder_id),
+                    handle_upload_file(raw_docs_folder_id),
+                ]);
             })(),
         ]);
         resolve();
