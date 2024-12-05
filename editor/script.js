@@ -131,10 +131,10 @@ async function basic_layout_in_google_drive() {
 
 
 class Document {
-    constructor(id, name, modified_time) {
-        this.id = id;
+    constructor(name, modified_time, ids, folder_ids) {
         this.name = name;
         this.modified_time = modified_time;
+        this.ids = ids;
 
         this.view = this.get_view();
         this.detailed_view = this.get_detailed_view();
@@ -206,20 +206,40 @@ class Documents {
 };
 
 
-async function list_documents(raw_docs_folder_id) {
+async function list_documents(folder_ids) {
     let response = await gapi.client.drive.files.list({
         "q": `
             "me" in owners and
             trashed = false and
-            "${raw_docs_folder_id}" in parents
+            (
+                "${folder_ids.raw_docs}" in parents or
+                "${folder_ids.templates}" in parents or
+                "${folder_ids.data_templates}" in parents
+            )
         `,
-        "fields": "files(id, name, modifiedTime)",
+        "fields": "files(id, name, modifiedTime, parents)",
     });
     console.log(response);
+
+    let files = new Map();
+    response.result.files.forEach(async file => {
+        if (file.parents.length != 1)
+            await popup_error(`File "${file.name}" should have exactly 1 parent`);
+        if (!files.has(file.name)) files.set(file.name, {ids: {}});
+
+        if (file.parents[0] == folder_ids.raw_docs) {
+            files.get(file.name).modified_time = file.modifiedTime;
+            files.get(file.name).ids.raw_doc = file.id;
+        } else if (file.parents[0] == folder_ids.templates) files.get(file.name).ids.template = file.id;
+        else if (file.parents[0] == folder_ids.data_templates) files.get(file.name).ids.data_template = file.id;
+    });
+    console.log(files);
+
     let documents = new Documents();
-    for (const file of response.result.files) {
-        console.log(file);
-        documents.append_child(new Document(file.id, file.name, file.modifiedTime));
+    for (const file of files) {
+        let file_name = file[0], file_obj = file[1];
+        if (file_obj.raw_doc_id === undefined) await popup_error(`File "${file_name}" doesn't have raw_doc_id`);
+        documents.append_child(new Document(file_obj.name, file_obj.modified_time, file_obj.ids, folder_ids));
     };
 }
 
@@ -285,7 +305,7 @@ window.addEventListener("load", async () => {
             (async () => {
                 const folder_ids = await basic_layout_in_google_drive();
                 await Promise.all([
-                    list_documents(folder_ids.raw_docs),
+                    list_documents(folder_ids),
                     handle_upload_file(folder_ids.raw_docs),
                 ]);
             })(),
