@@ -238,8 +238,8 @@ async function list_documents(folder_ids) {
     let documents = new Documents();
     for (const file of files) {
         let file_name = file[0], file_obj = file[1];
-        if (file_obj.raw_doc_id === undefined) await popup_error(`File "${file_name}" doesn't have raw_doc_id`);
-        documents.append_child(new Document(file_obj.name, file_obj.modified_time, file_obj.ids, folder_ids));
+        if (file_obj.ids.raw_doc === undefined) await popup_error(`File "${file_name}" doesn't have raw_doc_id`);
+        documents.append_child(new Document(file_name, file_obj.modified_time, file_obj.ids, folder_ids));
     };
 }
 
