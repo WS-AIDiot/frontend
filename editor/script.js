@@ -167,7 +167,7 @@ class Document {
                 </div>
                 <div class="buttons">
                     <button>
-                        <a href="https://docs.google.com/document/d/${this.id}" target="_blank">Edit</a>
+                        <a href="https://docs.google.com/document/d/${this.ids.raw_doc}" target="_blank">Edit</a>
                     </button>
                     <button>Process</button>
                     <button>Process with data</button>
