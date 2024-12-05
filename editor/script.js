@@ -106,12 +106,18 @@ async function get_folder_id(folder_name, parent_folder_id, force = true) {
 
 async function basic_layout_in_google_drive() {
     const ai_diot_folder_id = await get_folder_id("ai-diot", "root");
-    return Promise.all([
+    let ids = await Promise.all([
         get_folder_id("1. raw_docs", ai_diot_folder_id),
         get_folder_id("2.1. templates", ai_diot_folder_id),
         get_folder_id("2.2. data_templates", ai_diot_folder_id),
         get_folder_id("3. results", ai_diot_folder_id),
     ]);
+    return {
+        raw_docs: ids[0],
+        templates: ids[1],
+        data_templates: ids[2],
+        results: ids[3],
+    };
 };
 
 
@@ -268,14 +274,10 @@ window.addEventListener("load", async () => {
         await Promise.all([
             load_user_info(),
             (async () => {
-                const ids = await basic_layout_in_google_drive();
-                const raw_docs_folder_id = ids[0],
-                    templates_folder_id = ids[1],
-                    data_templates_folder_id = ids[2],
-                    results_folder_id = ids[3];
+                const folder_ids = await basic_layout_in_google_drive();
                 await Promise.all([
-                    list_documents(raw_docs_folder_id),
-                    handle_upload_file(raw_docs_folder_id),
+                    list_documents(folder_ids.raw_docs),
+                    handle_upload_file(folder_ids.raw_docs),
                 ]);
             })(),
         ]);
