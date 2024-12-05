@@ -45,6 +45,15 @@ async function popup(title, message = null, message_tag = "p", awaitable = null)
     document.body.style.overflow = "auto";
 };
 
+async function debug_popup(obj) {
+    await popup("Debug", JSON.stringify(obj, null, 4), "pre");
+};
+
+async function popup_error(error_message) {
+    await popup("Error", error_message);
+    throw new Error(error_message);
+};
+
 
 async function load_user_info() {
     let response;
