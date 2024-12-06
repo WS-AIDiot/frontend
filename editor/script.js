@@ -137,7 +137,19 @@ class Document {
         this.ids = ids;
 
         this.view = this.get_view();
-        this.detailed_view = this.get_detailed_view();
+        this.detailed_view = this.get_detailed_view(folder_ids);
+    }
+
+    async mock_copy(folder_id) {
+        await popup("Warning!", "Not implemented yet<br>Just copying file", "p", (async () => {
+            let response = await gapi.client.drive.files.copy({
+                "fileId": this.ids.raw_doc,
+                "parents": [folder_id],
+                "name": this.name,
+            });
+            console.log(response);
+            location.reload();
+        })());
     }
 
     get_view() {
@@ -154,7 +166,7 @@ class Document {
         return view;
     }
 
-    get_detailed_view() {
+    get_detailed_view(folder_ids) {
         let view = document.createElement("div");
         view.id = "detailed";
         view.classList.add("document");
@@ -169,17 +181,43 @@ class Document {
                     <button>
                         <a href="https://docs.google.com/document/d/${this.ids.raw_doc}" target="_blank">Edit</a>
                     </button>
-                    <button>Process</button>
-                    <button>Process with data</button>
-                    <button id="delete">Delete</button>
                 </div>
             </div>
             <button class="select">Select</button>
         `;
-        let buttons = view.getElementsByClassName("buttons")[0].getElementsByTagName("button");
-        buttons[1].addEventListener("click", () => {alert("ToDo")});
-        buttons[2].addEventListener("click", () => {alert("ToDo")});
-        buttons[3].addEventListener("click", () => {alert("ToDo")});
+
+        let buttons = view.getElementsByClassName("buttons")[0], button = document.createElement("button");
+        if (this.ids.template === undefined) {
+            button.innerHTML = "Process";
+            button.addEventListener("click", async () => {
+                await this.mock_copy(folder_ids.templates);
+            });
+        } else {
+            button.innerHTML = `
+                <a href="https://docs.google.com/document/d/${this.ids.template}" target="_blank">Edit template</a>
+            `;
+        }
+        buttons.appendChild(button);
+
+        button = document.createElement("button");
+        if (this.ids.data_template === undefined) {
+            button.innerHTML = "Process with data";
+            button.addEventListener("click", async () => {
+                await this.mock_copy(folder_ids.data_templates);
+            });
+        } else {
+            button.innerHTML = `
+                <a href="https://docs.google.com/document/d/${this.ids.template}" target="_blank">Edit data template</a>
+            `;
+        }
+        buttons.appendChild(button);
+
+        button = document.createElement("button");
+        button.id = "delete";
+        button.innerHTML = "Delete";
+        button.addEventListener("click", () => {alert("ToDo")});
+        buttons.appendChild(button);
+
         return view;
     }
 };
