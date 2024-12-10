@@ -29,10 +29,10 @@
         </div>
     </div>
     <div id="editors">
-        <div class="editor active">
-            <div id="upload_button_container">
-                <input id="upload" type="file">
-                <label id="upload_label" for="upload">Upload</label>
+        <div id="documents_editor" class="editor active">
+            <div class="top_button_container">
+                <input id="upload_file" type="file">
+                <label id="upload_file_label" for="upload_file">Upload</label>
             </div>
             <div id="documents">
                 <!-- <div class="document">
@@ -61,8 +61,12 @@
                 </div> -->
             </div>
         </div>
-        <div class="editor">Data Sources Editor</div>
-        <div class="editor">Build Editor</div>
+        <div id="data_source_editor" class="editor">
+            <div class="top_button_container">
+                <button id="add_data_source" class="red">Add</button>
+            </div>
+        </div>
+        <div id="build_editor" class="editor">Build Editor</div>
     </div>
     <footer>
         <div id="footer_info_container">

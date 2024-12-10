@@ -283,7 +283,8 @@ async function list_documents(folder_ids) {
 
 
 async function handle_upload_file(raw_docs_folder_id) {
-    document.getElementById("upload").addEventListener("change", async () => {
+    let upload = document.getElementById("upload_file");
+    upload.addEventListener("change", async ev => {
         await popup("Uploading file...", "Please wait", "p", new Promise(async () => {
             const file = upload.files[0];
             console.log("Uploading file:", file.type, file.name);

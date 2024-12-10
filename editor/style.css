@@ -121,7 +121,7 @@ div.editor.active {
 }
 
 
-div#upload_button_container {
+div.top_button_container {
     box-sizing: border-box;
     display: flex;
     justify-content: end;
@@ -132,10 +132,13 @@ div#upload_button_container {
     border-bottom: 1px solid #fff;
 }
 
-input#upload {
+div.top_button_container > * {
+    height: 45px;
+}
+input#upload_file {
     display: none;
 }
-label#upload_label {
+label#upload_file_label {
     cursor: pointer;
     display: inline-flex;
     justify-content: center;
@@ -143,7 +146,6 @@ label#upload_label {
 
     border-radius: 10px;
     width: 115px;
-    height: 45px;
 
     background-color: #d03f41;
     font-weight: 500;
