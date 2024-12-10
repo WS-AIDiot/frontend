@@ -338,15 +338,13 @@ window.addEventListener("load", async () => {
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
         await window.prepare_gapi();
-        await Promise.all([
+        const folder_ids = (await Promise.all([
             load_user_info(),
-            (async () => {
-                const folder_ids = await basic_layout_in_google_drive();
-                await Promise.all([
-                    list_documents(folder_ids),
-                    handle_upload_file(folder_ids.raw_docs),
-                ]);
-            })(),
+            basic_layout_in_google_drive(),
+        ]))[1];
+        await Promise.all([
+            list_documents(folder_ids),
+            handle_upload_file(folder_ids.raw_docs),
         ]);
         resolve();
     }));
