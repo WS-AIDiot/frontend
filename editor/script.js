@@ -45,7 +45,7 @@ async function popup(title, message = null, message_tag = "p", awaitable = null)
     document.body.style.overflow = "auto";
 };
 
-async function debug_popup(obj) {
+async function popup_debug(obj) {
     await popup("Debug", JSON.stringify(obj, null, 4), "pre");
 };
 
@@ -63,8 +63,8 @@ async function load_user_info() {
         });
     } catch (error) {
         error = error.result.error;
-        await popup("Error", JSON.stringify(error, null, 4), "pre");
         if (error.code === 401 && error.status === "UNAUTHENTICATED") window.location.pathname = "/";
+        await popup_debug(error);
     };
     const user = response.result.user;
     console.log(user);
