@@ -8,5 +8,10 @@ window.local_storage = {
         let str = JSON.stringify(value);
         localStorage.setItem(key, str);
         return str;
-    }
+    },
+    get_and_set: function (key, default_value, callback) {
+        let item = callback(this.get(key, default_value));
+        this.set(key, item);
+        return item;
+    },
 };
