@@ -64,7 +64,7 @@ async function load_user_info() {
     } catch (error) {
         error = error.result.error;
         if (error.code === 401 && error.status === "UNAUTHENTICATED") window.location.pathname = "/";
-        await popup_debug(error);
+        else await popup_debug(error);
     };
     const user = response.result.user;
     console.log(user);
