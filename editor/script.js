@@ -323,19 +323,19 @@ async function handle_upload_file(raw_docs_folder_id) {
 
 
 window.addEventListener("load", async () => {
-    let active_editor = 0;
     let tabs = document.getElementsByClassName("tab");
     let editors = document.getElementsByClassName("editor");
-    for (let i = 0; i < tabs.length; i++) {
-        const tab = tabs[i];
-        tab.addEventListener("click", (ev) => {
+    Array.from(tabs).forEach((tab, index) => {
+        tab.addEventListener("click", () => {
+            let active_editor = local_storage.get("active_editor", 0);
             tabs[active_editor].classList.remove("active");
             editors[active_editor].classList.remove("active");
-            active_editor = i;
-            tabs[i].classList.add("active");
-            editors[i].classList.add("active");
+            local_storage.set("active_editor", index);
+            tabs[index].classList.add("active");
+            editors[index].classList.add("active");
         });
-    }
+    });
+    tabs[local_storage.get("active_editor", 0)].click();
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
         await window.prepare_gapi();
