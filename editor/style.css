@@ -33,8 +33,10 @@ div#popup * {
 div#popup h1 {
     font-size: 30px;
 }
+
 div#popup p, div#popup pre {
     margin-top: 15px;
+    width: 100%;
     font-size: 15px;
 }
 div#popup p {
@@ -42,9 +44,36 @@ div#popup p {
 }
 div#popup pre {
     overflow: auto;
-    width: 100%;
     max-height: 30vh;
 }
+
+div#popup > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    width: 100%;
+}
+div#popup label, div#popup input {
+    white-space: nowrap;
+    font-size: 20px;
+}
+div#popup label {
+    color: rgba(255, 255, 255, 0.5);
+}
+div#popup input {
+    text-align: right;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    margin-left: 10px;
+    width: 100%;
+    background: none;
+}
+div#popup p.comment {
+    margin-top: 5px;
+    text-align: left;
+}
+
 div#popup button {
     margin-top: 15px;
     padding: 5px 15px;
