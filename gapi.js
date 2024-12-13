@@ -13,7 +13,9 @@ window.prepare_gapi = () => {
                 apiKey: window.ENV.GAPI_CONFIG.API_KEY,
                 discoveryDocs: window.ENV.GAPI_CONFIG.DISCOVERY_DOCS,
             });
-            gapi.client.setToken({"access_token": window.local_storage.get("user").access_token});
+            let access_token = window.local_storage.get("user", {}).access_token;
+            if (access_token === undefined) window.location.pathname = "/";
+            gapi.client.setToken({"access_token": access_token});
             console.log("gAPI inited");
             resolve(gapi);
         });
