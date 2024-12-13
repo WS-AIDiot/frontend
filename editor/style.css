@@ -195,7 +195,6 @@ div.document {
     margin: 0 12vw 10px 12vw;
 }
 div.document#detailed {
-    margin-left: calc(12vw - 65px - 2px);
     border: solid #2d2d30;
     border-width: 3px 0px;
     padding: 15px 0px;
