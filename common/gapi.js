@@ -1,6 +1,6 @@
 /*
     <script src="/env.js"></script>
-    <script src="/gapi.js"></script>
+    <script src="/common/gapi.js"></script>
     <script src="/common/local_storage.js"></script>
     <script async defer src="https://apis.google.com/js/api.js"></script>
 */
