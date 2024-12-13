@@ -18,6 +18,23 @@ function mock_fetch(result) {
 }
 
 
+/**
+ * @param {String} tag
+ * @param {String} id
+ * @param {Array<String>} classList
+ * @param {String} innerHTML
+ * @returns {HTMLElement}
+ */
+function createElement(tag, id = "", classList = [], innerHTML = "") {
+    // TODO: поменять по коду
+    let element = document.createElement(tag);
+    element.id = id;
+    element.classList.add(...classList);
+    element.innerHTML = innerHTML;
+    return element;
+}
+
+
 async function popup(title, message = null, message_tag = "p", awaitable = null) {
     let popup = document.createElement("div");
     popup.id = "popup_container";
