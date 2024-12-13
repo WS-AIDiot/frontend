@@ -72,6 +72,53 @@ async function popup_error(error_message) {
 };
 
 
+/**
+ * @param {String} title
+ * @param {Array<{name: string, type: Type, comment: String | undefined}>} fields
+ */
+function popup_form(title, fields) {
+    let innerHTML = "";
+    for (const field of fields) {
+        if (field.type === String) {
+            innerHTML += `
+                <div class="input_block">
+                    <label for="${field.name}">${field.name}:</label>
+                    <input type="text" id="${field.name}" name="${field.name}" required>
+                </div>
+                ${(field.comment === undefined) ? "" : `<p class="comment">${field.comment}</p>`}
+            `;
+        } else {
+            popup_error(`Unsupported field type: ${field.type}`);
+        };
+    };
+    let popup = createElement("div", "popup_container", [], `
+        <div id="popup">
+            <h1>${title}</h1>
+            ${innerHTML}
+            <button>Submit</button>
+        </div>
+    `);
+    let button = popup.querySelector("button");
+
+    document.body.style.overflow = "hidden";
+    document.body.appendChild(popup);
+
+    return new Promise((resolve, reject) => {
+        popup.addEventListener("click", ev => {
+            if (ev.target === button || ev.target === popup) {
+                document.body.removeChild(popup);
+                document.body.style.overflow = "auto";
+                resolve(
+                    (ev.target === button) ?
+                        Array.from(popup.getElementsByTagName("input")).map(el => el.value) :
+                        null
+                );
+            };
+        });
+    });
+};
+
+
 async function load_user_info() {
     let response;
     try {
