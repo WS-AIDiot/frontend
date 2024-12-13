@@ -401,6 +401,28 @@ window.addEventListener("load", async () => {
     });
     tabs[local_storage.get("active_editor", 0)].click();
 
+    document.querySelector("#add_data_source").addEventListener("click", async () => {
+        let data_source_info = await popup_form("Add Data Source", [
+            { name: "Data Source Name", type: String },
+            {
+                name: "Connection String",
+                type: String,
+                comment: "PostgreSQL connection string format:<br>postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]"
+            },
+            { name: "SQL Request", type: String },
+        ]);
+        if (data_source_info === null) return;
+        // MOCK
+        local_storage.get_and_set("data_sources", [], (data_sorces) => {
+            data_sorces.push({
+                "name": data_source_info[0],
+                "created_at": new Date(),
+            });
+            return data_sorces;
+        });
+        location.reload();
+    });
+
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
         await window.prepare_gapi();
         const folder_ids = (await Promise.all([
