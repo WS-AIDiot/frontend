@@ -217,24 +217,19 @@ class Document {
     }
 
     get_view() {
-        let view = document.createElement("div");
-        view.classList.add("document");
-        view.innerHTML = `
+        let view = createElement("div", "", ["document", "editor_item"], `
             <img src="doc_icon.png" alt="Document Icon">
             <div class="captions">
                 <h2 class="title">${this.name}</h2>
                 <p class="date">${this.modified_time}</p>
             </div>
             <button class="select">Select</button>
-        `;
+        `);
         return view;
     }
 
     get_detailed_view(folder_ids) {
-        let view = document.createElement("div");
-        view.id = "detailed";
-        view.classList.add("document");
-        view.innerHTML = `
+        let view = createElement("div", "detailed", ["document", "editor_item"], `
             <img src="doc_icon.png" alt="Document Icon">
             <div id="action_block">
                 <div class="captions">
@@ -248,7 +243,7 @@ class Document {
                 </div>
             </div>
             <button class="select">Select</button>
-        `;
+        `);
 
         let buttons = view.getElementsByClassName("buttons")[0], button = document.createElement("button");
         if (this.ids.template === undefined) {

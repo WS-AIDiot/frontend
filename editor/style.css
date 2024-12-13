@@ -183,13 +183,13 @@ label#upload_file_label {
 }
 
 
-div#documents {
+div.editor_items_container {
     overflow-y: auto;
     box-sizing: border-box;
     height: calc(100vh - 50px - 60px - 80px - 10vh);
     padding-top: 15px;
 }
-div.document {
+div.editor_item {
     display: flex;
     align-items: center;
     margin: 0 12vw 10px 12vw;
@@ -200,7 +200,7 @@ div.document#detailed {
     padding: 15px 0px;
 }
 
-div.document > img {
+div.editor_item > img {
     width: 50px;
     height: 50px;
 }
@@ -209,18 +209,18 @@ div.document#detailed > img {
     height: 125px;
 }
 
-div.document div.captions {
+div.editor_item div.captions {
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
 }
-div.document > div.captions, div.document > div#action_block {
+div.editor_item > div.captions, div#action_block {
     width: 60vw;
 }
-div.document > div.captions {
+div.editor_item > div.captions {
     margin: 0px 100px 0px 75px;
 }
-div.document > div#action_block {
+div#action_block {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -228,27 +228,27 @@ div.document > div#action_block {
     height: 75px;
 }
 
-div.document > div#action_block > div.captions {
+div#action_block > div.captions {
     width: 100%;
 }
-div.document div.captions > * {
+div.editor_item div.captions > * {
     display: inline-block;
     font-weight: 500;
 }
-div.document div.captions > h2 {
+div.editor_item div.captions > h2 {
     font-size: 24px;
     color: #fff;
 }
-div.document div.captions > p {
+div.editor_item div.captions > p {
     font-size: 20px;
     color: #2d2d30;
 }
 
-div.document button {
+div.editor_item button {
     background-color: #2d2d30;
     color: #fff;
 }
-div.document > button {
+div.editor_item > button {
     width: 140px;
     height: 40px;
     font-size: 22px;
