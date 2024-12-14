@@ -23,14 +23,16 @@ function mock_fetch(result) {
  * @param {String} id
  * @param {Array<String>} classList
  * @param {String} innerHTML
+ * @param {HTMLElement[]} childList
  * @returns {HTMLElement}
  */
-function createElement(tag, id = "", classList = [], innerHTML = "") {
+function createElement(tag, id = "", classList = [], innerHTML = "", childList = []) {
     // TODO: поменять по коду
     let element = document.createElement(tag);
-    element.id = id;
-    element.classList.add(...classList);
+    if (id) element.id = id;
+    if (classList) element.classList.add(...classList);
     element.innerHTML = innerHTML;
+    childList.forEach(child => element.appendChild(child));
     return element;
 }
 
