@@ -192,6 +192,7 @@ div.editor_items_container {
 div.editor_item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 0 12vw 10px 12vw;
 }
 
@@ -242,6 +243,11 @@ div.editor_item div.captions > p {
 
 div#action_block > div.captions {
     width: 100%;
+}
+
+div.data_source div.captions {
+    margin: 0;
+    width: 50vw;
 }
 
 div.editor_item button {

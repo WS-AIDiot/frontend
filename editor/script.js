@@ -119,6 +119,25 @@ function popup_form(title, fields) {
 };
 
 
+async function load_data_sources() {
+    // MOCK
+    const data_sorces_element = document.querySelector("#data_sources");
+    const data_sources = local_storage.get("data_sources", []);
+    for (const data_sorce of data_sources) {
+        const data_sorce_element = createElement("div", "", ["data_source", "editor_item"], `
+            <img src="db_icon.png" alt="Document Icon">
+            <div class="captions">
+                <h2 class="title">${data_sorce.name}</h2>
+                <p class="date">${data_sorce.created_at}</p>
+            </div>
+            <button class="caution">Delete</button>
+            <button class="select">Select</button>
+        `);
+        data_sorces_element.appendChild(data_sorce_element);
+    };
+};
+
+
 async function load_user_info() {
     let response;
     try {
@@ -417,6 +436,7 @@ window.addEventListener("load", async () => {
     });
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
+        await load_data_sources();
         await window.prepare_gapi();
         const folder_ids = (await Promise.all([
             load_user_info(),
