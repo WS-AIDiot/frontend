@@ -194,10 +194,19 @@ div.editor_item {
     align-items: center;
     margin: 0 12vw 10px 12vw;
 }
+
 div.document#detailed {
     border: solid #2d2d30;
     border-width: 3px 0px;
     padding: 15px 0px;
+}
+div.document#detailed div#action_block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0px 100px 0px calc(75px - 7px);
+    width: 60vw;
+    height: 75px;
 }
 
 div.editor_item > img {
@@ -214,22 +223,9 @@ div.editor_item div.captions {
     justify-content: space-between;
     align-items: center;
 }
-div.editor_item > div.captions, div#action_block {
-    width: 60vw;
-}
 div.editor_item > div.captions {
     margin: 0px 100px 0px 75px;
-}
-div#action_block {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 0px 100px 0px calc(75px - 7px);
-    height: 75px;
-}
-
-div#action_block > div.captions {
-    width: 100%;
+    width: 60vw;
 }
 div.editor_item div.captions > * {
     display: inline-block;
@@ -244,6 +240,10 @@ div.editor_item div.captions > p {
     color: #2d2d30;
 }
 
+div#action_block > div.captions {
+    width: 100%;
+}
+
 div.editor_item button {
     background-color: #2d2d30;
     color: #fff;
@@ -253,12 +253,12 @@ div.editor_item > button {
     height: 40px;
     font-size: 22px;
 }
+
 div#action_block > div.buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 div#action_block > div.buttons > button {
     padding: 10px 20px;
     font-size: 20px;
