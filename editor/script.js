@@ -463,6 +463,8 @@ window.addEventListener("load", async () => {
     });
     tabs[local_storage.get("active_editor", 0)].click();
 
+    document.getElementById("build").addEventListener("click", () => tabs[2].click());
+
     document.querySelector("#add_data_source").addEventListener("click", async () => {
         let data_source_info = await popup_form("Add Data Source", [
             { name: "Data Source Name", type: String },
