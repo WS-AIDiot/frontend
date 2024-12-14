@@ -448,6 +448,84 @@ async function handle_upload_file(raw_docs_folder_id) {
 };
 
 
+class BuildData {
+    /**
+     * @param {String[]} template_fields_names
+     * @param {Object} data_sorce_data
+     */
+    constructor(template_fields_names, data_sorce_data) {
+        this.template_fields_names = template_fields_names;
+        this.data_sorce_data = data_sorce_data;
+    }
+
+    /**
+     * @returns {HTMLElement}
+     */
+    get_table() {
+        return createElement("table", "", [], `
+            <tr>
+                <th>Template field name</th>
+                <th>Value</th>
+                <th>Data example</th>
+            </tr>
+        `, this.template_fields_names.map(
+            template_field_name => this.#get_row(template_field_name)
+        ));
+    }
+
+    /**
+     * @param {String} template_field_name
+     * @returns {HTMLElement}
+     */
+    #get_row(template_field_name) {
+        const data_example_element = document.createElement("td");
+        return createElement("tr", "", [], `<td>${template_field_name}</td>`, [
+            createElement("td", "", [], "", [this.#get_select(data_example_element)]),
+            data_example_element,
+        ]);
+    };
+
+    /**
+     * @param {HTMLElement} data_example_element
+     * @returns {HTMLElement}
+     */
+    #get_select(data_example_element) {
+        /** @type {HTMLSelectElement} */
+        const select = createElement("select", "", [], `
+            <optgroup label="DataSource columns names">
+                ${
+                    Object.keys(this.data_sorce_data).reduce(
+                        (accumulator, currentKey) =>
+                            accumulator + `<option value="data_source:${currentKey}">${currentKey}</option>`,
+                    "")
+                }
+            </optgroup>
+            <optgroup label="Macroses">
+                <option value="macros:today">today</option>
+            </optgroup>
+            <optgroup label="Etc.">
+                <option value="etc:literal">literal</option>
+                <option value="etc:notset" selected disabled>notset</option>
+            </optgroup>
+        `);
+
+        select.addEventListener("change", () => {
+            if (select.value.startsWith("data_source"))
+                data_example_element.innerHTML = this.data_sorce_data[select.value.slice(12)];
+            else if (select.value === "macros:today") data_example_element.innerHTML = (new Date()).toLocaleDateString("ru-RU", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
+            else if (select.value === "etc:literal") data_example_element.innerHTML = `<input type="text">`;
+        });
+
+        return select;
+    };
+}
+
+
+
 window.addEventListener("load", async () => {
     const selector = new DocumentAndDataSourceSelector();
 
@@ -463,6 +541,24 @@ window.addEventListener("load", async () => {
             editors[index].classList.add("active");
         });
     });
+
+    tabs[2].addEventListener("click", () => {
+        // MOCK
+        const template_fields_names = ["ceo_name", "employee_name", "date"];
+        const data_sorce_data = {
+            "uid": "8e9d1c31-c7aa-491b-8974-bfe87f2d617f",
+            "fullname": "Иванов Иван Иванович",
+            "salary": "1500",
+            "phone_number": "+1 (222) 333-44-55",
+            "birthday": "01.01.2001",
+        }
+        const build_data = new BuildData(template_fields_names, data_sorce_data);
+        const build_editor = document.getElementById("build_editor");
+        build_editor.innerHTML = "";
+        build_editor.appendChild(build_data.get_table());
+    });
+
+    local_storage.get_and_set("active_editor", 0, active_editor => (active_editor == 2) ? 0 : active_editor );
     tabs[local_storage.get("active_editor", 0)].click();
 
     document.getElementById("build").addEventListener("click", () => tabs[2].click());

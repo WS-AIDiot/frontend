@@ -281,6 +281,38 @@ button#selected {
 }
 
 
+div#build_editor.active {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+div#build_editor table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 75%;
+    text-align: center;
+    color: white;
+}
+div#build_editor table * {
+    padding: 5px;
+}
+div#build_editor table tr {
+    border-bottom: 2px solid white;
+}
+div#build_editor table tr:last-child {
+    border-bottom: 0;
+}
+div#build_editor table tr:first-child {
+    border-bottom: 5px solid white;
+}
+div#build_editor table th {
+    font-size: 30px;
+}
+div#build_editor table td {
+    font-size: 24px;
+}
+
+
 footer {
     box-sizing: border-box;
     display: flex;
