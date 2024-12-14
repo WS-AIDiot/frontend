@@ -119,7 +119,33 @@ function popup_form(title, fields) {
 };
 
 
-async function load_data_sources() {
+class DocumentAndDataSourceSelector {
+    constructor() {
+        this.selected_document = null;
+        this.selected_data_source = null;
+        this.selected_document_footer_label = document
+            .getElementById("footer_document")
+            .getElementsByClassName("label")[0];
+        this.selected_data_source_footer_label = document
+            .getElementById("footer_data_source")
+            .getElementsByClassName("label")[0];
+    }
+
+    /** @param {Document} document */
+    select_document(document) {
+        this.selected_document = document;
+        this.selected_document_footer_label.innerHTML = document.name;
+    }
+    /** @param {Object} data_source */
+    select_data_source(data_source) {
+        this.selected_data_source = data_source;
+        this.selected_data_source_footer_label.innerHTML = data_source.name;
+    }
+};
+
+
+/** @param {DocumentAndDataSourceSelector} selector */
+async function load_data_sources(selector) {
     // MOCK
     const data_sorces_element = document.querySelector("#data_sources");
     const data_sources = local_storage.get("data_sources", []);
@@ -133,6 +159,14 @@ async function load_data_sources() {
             <button class="caution">Delete</button>
             <button class="select">Select</button>
         `);
+        const buttons = data_sorce_element.getElementsByTagName("button");
+        buttons[0].addEventListener("click", () => {
+            confirm(`Are you sure you want to delete DataSorce "${data_sorce.name}"?`);
+            alert("Just kidding. TODO");
+        });
+        buttons[1].addEventListener("click", () => {
+            selector.select_data_source(data_sorce);
+        });
         data_sorces_element.appendChild(data_sorce_element);
     };
 };
@@ -214,13 +248,25 @@ async function basic_layout_in_google_drive() {
 
 
 class Document {
-    constructor(name, modified_time, ids, folder_ids) {
+    constructor(selector, name, modified_time, ids, folder_ids) {
         this.name = name;
         this.modified_time = modified_time;
         this.ids = ids;
 
-        this.view = this.get_view();
-        this.detailed_view = this.get_detailed_view(folder_ids);
+        this.view = this.get_view(selector);
+        this.detailed_view = this.get_detailed_view(selector, folder_ids);
+    }
+
+    /**
+     * @param {DocumentAndDataSourceSelector} selector
+     * @param {HTMLElement} view
+     * @returns {HTMLElement}
+     */
+    add_select_listener(selector, view) {
+        view.getElementsByClassName("select")[0].addEventListener("click", () => {
+            selector.select_document(this);
+        });
+        return view;
     }
 
     async mock_copy(folder_id) {
@@ -235,7 +281,7 @@ class Document {
         })());
     }
 
-    get_view() {
+    get_view(selector) {
         let view = createElement("div", "", ["document", "editor_item"], `
             <img src="doc_icon.png" alt="Document Icon">
             <div class="captions">
@@ -244,10 +290,11 @@ class Document {
             </div>
             <button class="select">Select</button>
         `);
+        this.add_select_listener(selector, view);
         return view;
     }
 
-    get_detailed_view(folder_ids) {
+    get_detailed_view(selector, folder_ids) {
         let view = createElement("div", "detailed", ["document", "editor_item"], `
             <img src="doc_icon.png" alt="Document Icon">
             <div id="action_block">
@@ -263,6 +310,7 @@ class Document {
             </div>
             <button class="select">Select</button>
         `);
+        this.add_select_listener(selector, view);
 
         let buttons = view.getElementsByClassName("buttons")[0], button = document.createElement("button");
         if (this.ids.template === undefined) {
@@ -320,7 +368,7 @@ class Documents {
 };
 
 
-async function list_documents(folder_ids) {
+async function list_documents(selector, folder_ids) {
     let response = await gapi.client.drive.files.list({
         "q": `
             "me" in owners and
@@ -353,7 +401,7 @@ async function list_documents(folder_ids) {
     for (const file of files) {
         let file_name = file[0], file_obj = file[1];
         if (file_obj.ids.raw_doc === undefined) await popup_error(`File "${file_name}" doesn't have raw_doc_id`);
-        documents.append_child(new Document(file_name, file_obj.modified_time, file_obj.ids, folder_ids));
+        documents.append_child(new Document(selector, file_name, file_obj.modified_time, file_obj.ids, folder_ids));
     };
 }
 
@@ -399,6 +447,8 @@ async function handle_upload_file(raw_docs_folder_id) {
 
 
 window.addEventListener("load", async () => {
+    const selector = new DocumentAndDataSourceSelector();
+
     let tabs = document.getElementsByClassName("tab");
     let editors = document.getElementsByClassName("editor");
     Array.from(tabs).forEach((tab, index) => {
@@ -436,14 +486,14 @@ window.addEventListener("load", async () => {
     });
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
-        await load_data_sources();
+        await load_data_sources(selector);
         await window.prepare_gapi();
         const folder_ids = (await Promise.all([
             load_user_info(),
             basic_layout_in_google_drive(),
         ]))[1];
         await Promise.all([
-            list_documents(folder_ids),
+            list_documents(selector, folder_ids),
             handle_upload_file(folder_ids.raw_docs),
         ]);
         resolve();
