@@ -271,9 +271,7 @@ class Document {
         }
         buttons.appendChild(button);
 
-        button = document.createElement("button");
-        button.id = "delete";
-        button.innerHTML = "Delete";
+        button = createElement("button", "", ["caution"], "Delete");
         button.addEventListener("click", () => {alert("ToDo")});
         buttons.appendChild(button);
 
