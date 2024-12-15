@@ -608,23 +608,24 @@ class BuildData {
 }
 
 
-
 window.addEventListener("load", async () => {
-    const selector = new DocumentAndDataSourceSelector();
-
-    handle_tabs();
-
-    handle_add_data_source();
-
-    await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
+    await popup("Loading...", "Please wait", "p", (async () => {
         await window.prepare_gapi();
-        await load_data_sources(selector);
-        const folder_ids = (await Promise.all([
-            load_user_info(),
-            basic_layout_in_google_drive(),
-        ]))[1];
-        handle_upload_file(folder_ids.raw_docs);
-        await list_documents(selector, folder_ids);
-        resolve();
-    }));
+        await load_user_info();
+
+        // sync part
+        const selector = new DocumentAndDataSourceSelector();
+        handle_tabs();
+        handle_add_data_source();
+
+        // async part
+        await Promise.all([
+            (async () => {
+                const folder_ids = await basic_layout_in_google_drive();
+                handle_upload_file(folder_ids.raw_docs);
+                await list_documents(selector, folder_ids);
+            })(),
+            load_data_sources(selector),
+        ]);
+    })());
 });
