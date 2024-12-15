@@ -1,3 +1,7 @@
+const THIS_PAGE_URL = new URL(window.location);
+const API_ROOT = THIS_PAGE_URL.pathname.slice(0, THIS_PAGE_URL.pathname.indexOf("/editor")) + "/api";
+
+
 class MockResult {
     constructor(result) {
         this.result = result;
