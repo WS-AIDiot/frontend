@@ -614,8 +614,6 @@ window.addEventListener("load", async () => {
 
     handle_tabs();
 
-    handle_upload_file(folder_ids.raw_docs);
-
     handle_add_data_source();
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
@@ -625,6 +623,7 @@ window.addEventListener("load", async () => {
             load_user_info(),
             basic_layout_in_google_drive(),
         ]))[1];
+        handle_upload_file(folder_ids.raw_docs);
         await list_documents(selector, folder_ids);
         resolve();
     }));
