@@ -145,6 +145,41 @@ async function load_user_info() {
 };
 
 
+function handle_tabs() {
+    let tabs = document.getElementsByClassName("tab");
+    let editors = document.getElementsByClassName("editor");
+    Array.from(tabs).forEach((tab, index) => {
+        tab.addEventListener("click", () => {
+            let active_editor = local_storage.get("active_editor", 0);
+            tabs[active_editor].classList.remove("active");
+            editors[active_editor].classList.remove("active");
+            local_storage.set("active_editor", index);
+            tabs[index].classList.add("active");
+            editors[index].classList.add("active");
+        });
+    });
+    local_storage.get_and_set("active_editor", 0, active_editor => (active_editor == 2) ? 0 : active_editor );
+    tabs[local_storage.get("active_editor", 0)].click();
+
+    tabs[2].addEventListener("click", () => {
+        // MOCK
+        const template_fields_names = ["ceo_name", "employee_name", "date"];
+        const data_sorce_data = {
+            "uid": "8e9d1c31-c7aa-491b-8974-bfe87f2d617f",
+            "fullname": "Иванов Иван Иванович",
+            "salary": "1500",
+            "phone_number": "+1 (222) 333-44-55",
+            "birthday": "01.01.2001",
+        }
+        const build_data = new BuildData(template_fields_names, data_sorce_data);
+        const build_editor = document.getElementById("build_editor");
+        build_editor.innerHTML = "";
+        build_editor.appendChild(build_data.get_table());
+    });
+    document.getElementById("build").addEventListener("click", () => tabs[2].click());
+};
+
+
 const FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
 
 
@@ -539,39 +574,7 @@ class BuildData {
 window.addEventListener("load", async () => {
     const selector = new DocumentAndDataSourceSelector();
 
-    let tabs = document.getElementsByClassName("tab");
-    let editors = document.getElementsByClassName("editor");
-    Array.from(tabs).forEach((tab, index) => {
-        tab.addEventListener("click", () => {
-            let active_editor = local_storage.get("active_editor", 0);
-            tabs[active_editor].classList.remove("active");
-            editors[active_editor].classList.remove("active");
-            local_storage.set("active_editor", index);
-            tabs[index].classList.add("active");
-            editors[index].classList.add("active");
-        });
-    });
-
-    tabs[2].addEventListener("click", () => {
-        // MOCK
-        const template_fields_names = ["ceo_name", "employee_name", "date"];
-        const data_sorce_data = {
-            "uid": "8e9d1c31-c7aa-491b-8974-bfe87f2d617f",
-            "fullname": "Иванов Иван Иванович",
-            "salary": "1500",
-            "phone_number": "+1 (222) 333-44-55",
-            "birthday": "01.01.2001",
-        }
-        const build_data = new BuildData(template_fields_names, data_sorce_data);
-        const build_editor = document.getElementById("build_editor");
-        build_editor.innerHTML = "";
-        build_editor.appendChild(build_data.get_table());
-    });
-
-    local_storage.get_and_set("active_editor", 0, active_editor => (active_editor == 2) ? 0 : active_editor );
-    tabs[local_storage.get("active_editor", 0)].click();
-
-    document.getElementById("build").addEventListener("click", () => tabs[2].click());
+    handle_tabs();
 
     document.querySelector("#add_data_source").addEventListener("click", async () => {
         let data_source_info = await popup_form("Add Data Source", [
