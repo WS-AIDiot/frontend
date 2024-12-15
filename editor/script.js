@@ -434,6 +434,44 @@ async function handle_upload_file(raw_docs_folder_id) {
 };
 
 
+function handle_add_data_source() {
+    document.querySelector("#add_data_source").addEventListener("click", async () => {
+        let data_source_info = await popup_form("Add Data Source", [
+            { name: "Data Source Name", type: String },
+            {
+                name: "Connection String",
+                type: String,
+                comment: "PostgreSQL connection string format:<br>postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]"
+            },
+            { name: "SQL Request", type: String },
+        ]);
+        if (data_source_info === null) return;
+
+        let response = await fetch(`${API_ROOT}/v1/data_source`, {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+            },
+            body: JSON.stringify({
+                "name": data_source_info[0],
+                "connection_string": data_source_info[1],
+                "sql_request": data_source_info[2],
+            }),
+        });
+        let response_json = await response.json();
+
+        if (response.status === 200) location.reload()
+        else {
+            console.log(response, response_json);
+            await popup_debug(response);
+            await popup_debug(response_json);
+        }
+    });
+};
+
+
 class DocumentAndDataSourceSelector {
     constructor() {
         this.selected_document = null;
@@ -576,40 +614,7 @@ window.addEventListener("load", async () => {
 
     handle_tabs();
 
-    document.querySelector("#add_data_source").addEventListener("click", async () => {
-        let data_source_info = await popup_form("Add Data Source", [
-            { name: "Data Source Name", type: String },
-            {
-                name: "Connection String",
-                type: String,
-                comment: "PostgreSQL connection string format:<br>postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]"
-            },
-            { name: "SQL Request", type: String },
-        ]);
-        if (data_source_info === null) return;
-
-        let response = await fetch(`${API_ROOT}/v1/data_source`, {
-            method: "POST",
-            headers: {
-                "accept": "application/json",
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
-            },
-            body: JSON.stringify({
-                "name": data_source_info[0],
-                "connection_string": data_source_info[1],
-                "sql_request": data_source_info[2],
-            }),
-        });
-        let response_json = await response.json();
-
-        if (response.status === 200) location.reload()
-        else {
-            console.log(response, response_json);
-            await popup_debug(response);
-            await popup_debug(response_json);
-        }
-    });
+    handle_add_data_source();
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
         await window.prepare_gapi();
