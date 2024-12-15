@@ -578,15 +578,28 @@ window.addEventListener("load", async () => {
             { name: "SQL Request", type: String },
         ]);
         if (data_source_info === null) return;
-        // MOCK
-        local_storage.get_and_set("data_sources", [], (data_sorces) => {
-            data_sorces.push({
+
+        let response = await fetch(`${API_ROOT}/v1/data_source`, {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+            },
+            body: JSON.stringify({
                 "name": data_source_info[0],
-                "created_at": new Date(),
-            });
-            return data_sorces;
+                "connection_string": data_source_info[1],
+                "sql_request": data_source_info[2],
+            }),
         });
-        location.reload();
+        let response_json = await response.json();
+
+        if (response.status === 200) location.reload()
+        else {
+            console.log(response, response_json);
+            await popup_debug(response);
+            await popup_debug(response_json);
+        }
     });
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
