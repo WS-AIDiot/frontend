@@ -125,65 +125,6 @@ function popup_form(title, fields) {
 };
 
 
-class DocumentAndDataSourceSelector {
-    constructor() {
-        this.selected_document = null;
-        this.selected_data_source = null;
-        this.selected_document_footer_label = document
-            .getElementById("footer_document")
-            .getElementsByClassName("label")[0];
-        this.selected_data_source_footer_label = document
-            .getElementById("footer_data_source")
-            .getElementsByClassName("label")[0];
-    }
-
-    /** @param {Document} document */
-    select_document(document) {
-        this.selected_document = document;
-        this.selected_document_footer_label.innerHTML = document.name;
-    }
-    /** @param {Object} data_source */
-    select_data_source(data_source) {
-        this.selected_data_source = data_source.uid;
-        this.selected_data_source_footer_label.innerHTML = data_source.name;
-    }
-};
-
-
-/** @param {DocumentAndDataSourceSelector} selector */
-async function load_data_sources(selector) {
-    let response = await fetch(`${API_ROOT}/v1/data_source`, {
-        headers: {
-            "accept": "application/json",
-            "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
-        },
-    });
-    let response_json = await response.json();
-
-    const data_sorces_element = document.querySelector("#data_sources");
-    for (const data_sorce of response_json) {
-        const data_sorce_element = createElement("div", "", ["data_source", "editor_item"], `
-            <img src="db_icon.png" alt="Document Icon">
-            <div class="captions">
-                <h2 class="title">${data_sorce.name}</h2>
-                <p class="date">${data_sorce.created_at}</p>
-            </div>
-            <button class="caution">Delete</button>
-            <button class="select">Select</button>
-        `);
-        const buttons = data_sorce_element.getElementsByTagName("button");
-        buttons[0].addEventListener("click", () => {
-            confirm(`Are you sure you want to delete DataSorce "${data_sorce.name}"?`);
-            alert("Just kidding. TODO");
-        });
-        buttons[1].addEventListener("click", () => {
-            selector.select_data_source(data_sorce);
-        });
-        data_sorces_element.appendChild(data_sorce_element);
-    };
-};
-
-
 async function load_user_info() {
     let response;
     try {
@@ -455,6 +396,65 @@ async function handle_upload_file(raw_docs_folder_id) {
             location.reload();
         }));
     });
+};
+
+
+class DocumentAndDataSourceSelector {
+    constructor() {
+        this.selected_document = null;
+        this.selected_data_source = null;
+        this.selected_document_footer_label = document
+            .getElementById("footer_document")
+            .getElementsByClassName("label")[0];
+        this.selected_data_source_footer_label = document
+            .getElementById("footer_data_source")
+            .getElementsByClassName("label")[0];
+    }
+
+    /** @param {Document} document */
+    select_document(document) {
+        this.selected_document = document;
+        this.selected_document_footer_label.innerHTML = document.name;
+    }
+    /** @param {Object} data_source */
+    select_data_source(data_source) {
+        this.selected_data_source = data_source.uid;
+        this.selected_data_source_footer_label.innerHTML = data_source.name;
+    }
+};
+
+
+/** @param {DocumentAndDataSourceSelector} selector */
+async function load_data_sources(selector) {
+    let response = await fetch(`${API_ROOT}/v1/data_source`, {
+        headers: {
+            "accept": "application/json",
+            "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+        },
+    });
+    let response_json = await response.json();
+
+    const data_sorces_element = document.querySelector("#data_sources");
+    for (const data_sorce of response_json) {
+        const data_sorce_element = createElement("div", "", ["data_source", "editor_item"], `
+            <img src="db_icon.png" alt="Document Icon">
+            <div class="captions">
+                <h2 class="title">${data_sorce.name}</h2>
+                <p class="date">${data_sorce.created_at}</p>
+            </div>
+            <button class="caution">Delete</button>
+            <button class="select">Select</button>
+        `);
+        const buttons = data_sorce_element.getElementsByTagName("button");
+        buttons[0].addEventListener("click", () => {
+            confirm(`Are you sure you want to delete DataSorce "${data_sorce.name}"?`);
+            alert("Just kidding. TODO");
+        });
+        buttons[1].addEventListener("click", () => {
+            selector.select_data_source(data_sorce);
+        });
+        data_sorces_element.appendChild(data_sorce_element);
+    };
 };
 
 
