@@ -394,7 +394,7 @@ async function list_documents(selector, folder_ids) {
 }
 
 
-async function handle_upload_file(raw_docs_folder_id) {
+function handle_upload_file(raw_docs_folder_id) {
     let upload = document.getElementById("upload_file");
     upload.addEventListener("change", async ev => {
         await popup("Uploading file...", "Please wait", "p", new Promise(async () => {
@@ -614,6 +614,8 @@ window.addEventListener("load", async () => {
 
     handle_tabs();
 
+    handle_upload_file(folder_ids.raw_docs);
+
     handle_add_data_source();
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
@@ -623,10 +625,7 @@ window.addEventListener("load", async () => {
             load_user_info(),
             basic_layout_in_google_drive(),
         ]))[1];
-        await Promise.all([
-            list_documents(selector, folder_ids),
-            handle_upload_file(folder_ids.raw_docs),
-        ]);
+        await list_documents(selector, folder_ids);
         resolve();
     }));
 });
