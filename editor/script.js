@@ -144,7 +144,7 @@ class DocumentAndDataSourceSelector {
     }
     /** @param {Object} data_source */
     select_data_source(data_source) {
-        this.selected_data_source = data_source;
+        this.selected_data_source = data_source.uid;
         this.selected_data_source_footer_label.innerHTML = data_source.name;
     }
 };
@@ -152,10 +152,16 @@ class DocumentAndDataSourceSelector {
 
 /** @param {DocumentAndDataSourceSelector} selector */
 async function load_data_sources(selector) {
-    // MOCK
+    let response = await fetch(`${API_ROOT}/v1/data_source`, {
+        headers: {
+            "accept": "application/json",
+            "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+        },
+    });
+    let response_json = await response.json();
+
     const data_sorces_element = document.querySelector("#data_sources");
-    const data_sources = local_storage.get("data_sources", []);
-    for (const data_sorce of data_sources) {
+    for (const data_sorce of response_json) {
         const data_sorce_element = createElement("div", "", ["data_source", "editor_item"], `
             <img src="db_icon.png" alt="Document Icon">
             <div class="captions">
@@ -603,8 +609,8 @@ window.addEventListener("load", async () => {
     });
 
     await popup("Loading...", "Please wait", "p", new Promise(async (resolve, reject) => {
-        await load_data_sources(selector);
         await window.prepare_gapi();
+        await load_data_sources(selector);
         const folder_ids = (await Promise.all([
             load_user_info(),
             basic_layout_in_google_drive(),
