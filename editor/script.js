@@ -176,26 +176,28 @@ function handle_tabs(selector) {
             return;
         }
 
+        const build_editor = document.getElementById("build_editor");
+        build_editor.innerHTML = "";
         await popup("Loading...", "Please wait", "p", (async () => {
-            let response = await fetch(`${API_ROOT}/v1/documents/${selector.selected_document}`, {
-                headers: {
-                    "accept": "application/json",
-                    "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
-                },
-            });
-            const template_fields_names = await response.json();
-
-            // MOCK
-            const data_sorce_data = {
-                "uid": "8e9d1c31-c7aa-491b-8974-bfe87f2d617f",
-                "fullname": "Иванов Иван Иванович",
-                "salary": "1500",
-                "phone_number": "+1 (222) 333-44-55",
-                "birthday": "01.01.2001",
-            }
-            const build_data = new BuildData(template_fields_names, data_sorce_data);
-            const build_editor = document.getElementById("build_editor");
-            build_editor.innerHTML = "";
+            const headers = {
+                "accept": "application/json",
+                "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+            };
+            const [template_fields_names, data_source_data] = await Promise.all([
+                (async () => {
+                    let response = await fetch(`${API_ROOT}/v1/documents/${selector.selected_document}`, {
+                        headers: headers,
+                    });
+                    return await response.json();
+                })(),
+                (async () => {
+                    let response = await fetch(`${API_ROOT}/v1/data_source/${selector.selected_data_source}/data_sample`, {
+                        headers: headers,
+                    });
+                    return await response.json();
+                })(),
+            ]);
+            const build_data = new BuildData(template_fields_names, data_source_data);
             build_editor.appendChild(build_data.get_table());
         })());
     });
