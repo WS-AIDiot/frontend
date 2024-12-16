@@ -19,16 +19,22 @@
     <div id="profile"><h1>...</h1></div>
     <div id="tabs">
         <div class="tab">
-            <h1>Documents</h1>
+            <h1>Data Sources</h1>
         </div>
         <div class="tab">
-            <h1>Data Sources</h1>
+            <h1>Documents</h1>
         </div>
         <div class="tab">
             <h1>Build</h1>
         </div>
     </div>
     <div id="editors">
+        <div id="data_source_editor" class="editor">
+            <div class="top_button_container">
+                <button id="add_data_source" class="red">Add</button>
+            </div>
+            <div id="data_sources" class="editor_items_container"></div>
+        </div>
         <div id="documents_editor" class="editor">
             <div class="top_button_container">
                 <input id="upload_file" type="file">
@@ -36,22 +42,16 @@
             </div>
             <div id="documents" class="editor_items_container"></div>
         </div>
-        <div id="data_source_editor" class="editor">
-            <div class="top_button_container">
-                <button id="add_data_source" class="red">Add</button>
-            </div>
-            <div id="data_sources" class="editor_items_container"></div>
-        </div>
         <div id="build_editor" class="editor"></div>
     </div>
     <footer>
         <div id="footer_info_container">
-            <div id="footer_document">
-                <p class="caption">Document:</p>
-                <p class="label">---</p>
-            </div>
             <div id="footer_data_source">
                 <p class="caption">Data Source:</p>
+                <p class="label">---</p>
+            </div>
+            <div id="footer_document">
+                <p class="caption">Document:</p>
                 <p class="label">---</p>
             </div>
         </div>

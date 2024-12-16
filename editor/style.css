@@ -331,7 +331,7 @@ div#footer_info_container {
 div#footer_info_container > div {
     display: inline-block;
 }
-div#footer_document {
+div#footer_info_container > div:first-child {
     margin-right: 15px;
 }
 
