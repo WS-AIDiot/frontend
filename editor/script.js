@@ -329,7 +329,30 @@ class Document {
         if (this.ids.template === undefined) {
             button.innerHTML = "Process";
             button.addEventListener("click", async () => {
-                await this.mock_copy(folder_ids.templates);
+                if (selector.selected_data_source === null) {
+                    await popup("Error", "Please select a data_source");
+                    return;
+                }
+                await popup("Processing...", "Please wait", "p", (async () => {
+                    let response = await fetch(`${API_ROOT}/v1/documents/${this.ids.raw_doc}/process`, {
+                        "method": "POST",
+                        "headers": {
+                            "accept": "application/json",
+                            "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+                            "Content-Type": "application/json",
+                        },
+                        "body": JSON.stringify({
+                            "document_filename": this.name,
+                            "parent_folder_id": folder_ids.templates,
+                            "data_source_uid": selector.selected_data_source,
+                        }),
+                    });
+                    if (response.status !== 200) {
+                        response = await response.json();
+                        await popup_debug(response);
+                    }
+                    location.reload();
+                })());
             });
         } else {
             button.innerHTML = `
@@ -338,18 +361,19 @@ class Document {
         }
         buttons.appendChild(button);
 
-        button = document.createElement("button");
-        if (this.ids.data_template === undefined) {
-            button.innerHTML = "Process with data";
-            button.addEventListener("click", async () => {
-                await this.mock_copy(folder_ids.data_templates);
-            });
-        } else {
-            button.innerHTML = `
-                <a href="https://docs.google.com/document/d/${this.ids.template}" target="_blank">Edit data template</a>
-            `;
-        }
-        buttons.appendChild(button);
+        // TODO
+        // button = document.createElement("button");
+        // if (this.ids.data_template === undefined) {
+        //     button.innerHTML = "Process with data";
+        //     button.addEventListener("click", async () => {
+        //         await this.mock_copy(folder_ids.data_templates);
+        //     });
+        // } else {
+        //     button.innerHTML = `
+        //         <a href="https://docs.google.com/document/d/${this.ids.template}" target="_blank">Edit data template</a>
+        //     `;
+        // }
+        // buttons.appendChild(button);
 
         button = createElement("button", "", ["caution"], "Delete");
         button.addEventListener("click", () => {alert("ToDo")});
