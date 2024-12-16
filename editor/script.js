@@ -145,7 +145,10 @@ async function load_user_info() {
 };
 
 
-function handle_tabs() {
+/**
+ * @param {DocumentAndDataSourceSelector} selector
+ */
+function handle_tabs(selector) {
     let tabs = document.getElementsByClassName("tab");
     let editors = document.getElementsByClassName("editor");
     Array.from(tabs).forEach((tab, index) => {
@@ -161,20 +164,40 @@ function handle_tabs() {
     local_storage.get_and_set("active_editor", 0, active_editor => (active_editor == 2) ? 0 : active_editor );
     tabs[local_storage.get("active_editor", 0)].click();
 
-    tabs[2].addEventListener("click", () => {
-        // MOCK
-        const template_fields_names = ["ceo_name", "employee_name", "date"];
-        const data_sorce_data = {
-            "uid": "8e9d1c31-c7aa-491b-8974-bfe87f2d617f",
-            "fullname": "Иванов Иван Иванович",
-            "salary": "1500",
-            "phone_number": "+1 (222) 333-44-55",
-            "birthday": "01.01.2001",
+    tabs[2].addEventListener("click", async () => {
+        if (selector.selected_document === null) {
+            await popup("Error", "Please select a document");
+            tabs[0].click();
+            return;
         }
-        const build_data = new BuildData(template_fields_names, data_sorce_data);
-        const build_editor = document.getElementById("build_editor");
-        build_editor.innerHTML = "";
-        build_editor.appendChild(build_data.get_table());
+        if (selector.selected_data_source === null) {
+            await popup("Error", "Please select a data_source");
+            tabs[1].click();
+            return;
+        }
+
+        await popup("Loading...", "Please wait", "p", (async () => {
+            let response = await fetch(`${API_ROOT}/v1/documents/${selector.selected_document}`, {
+                headers: {
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${gapi.auth.getToken().access_token}`,
+                },
+            });
+            const template_fields_names = await response.json();
+
+            // MOCK
+            const data_sorce_data = {
+                "uid": "8e9d1c31-c7aa-491b-8974-bfe87f2d617f",
+                "fullname": "Иванов Иван Иванович",
+                "salary": "1500",
+                "phone_number": "+1 (222) 333-44-55",
+                "birthday": "01.01.2001",
+            }
+            const build_data = new BuildData(template_fields_names, data_sorce_data);
+            const build_editor = document.getElementById("build_editor");
+            build_editor.innerHTML = "";
+            build_editor.appendChild(build_data.get_table());
+        })());
     });
     document.getElementById("build").addEventListener("click", () => tabs[2].click());
 };
@@ -486,7 +509,7 @@ class DocumentAndDataSourceSelector {
 
     /** @param {Document} document */
     select_document(document) {
-        this.selected_document = document;
+        this.selected_document = document.ids.data_template || document.ids.template;  // TODO: failback
         this.selected_document_footer_label.innerHTML = document.name;
     }
     /** @param {Object} data_source */
@@ -615,7 +638,7 @@ window.addEventListener("load", async () => {
 
         // sync part
         const selector = new DocumentAndDataSourceSelector();
-        handle_tabs();
+        handle_tabs(selector);
         handle_add_data_source();
 
         // async part
