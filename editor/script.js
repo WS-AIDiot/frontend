@@ -165,13 +165,13 @@ function handle_tabs(selector) {
     tabs[local_storage.get("active_editor", 0)].click();
 
     tabs[2].addEventListener("click", async () => {
-        if (selector.selected_document === null) {
-            await popup("Error", "Please select a document");
+        if (selector.selected_data_source === null) {
+            await popup("Error", "Please select a data_source");
             tabs[0].click();
             return;
         }
-        if (selector.selected_data_source === null) {
-            await popup("Error", "Please select a data_source");
+        if (selector.selected_document === null) {
+            await popup("Error", "Please select a document");
             tabs[1].click();
             return;
         }
