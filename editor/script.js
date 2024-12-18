@@ -1,5 +1,6 @@
 const THIS_PAGE_URL = new URL(window.location);
 const API_ROOT = THIS_PAGE_URL.pathname.slice(0, THIS_PAGE_URL.pathname.indexOf("/editor")) + "/api";
+const WS_URL = "ws://localhost:8000/api/v1/documents/ws";
 
 
 class MockResult {
@@ -148,7 +149,7 @@ async function load_user_info() {
 /**
  * @param {DocumentAndDataSourceSelector} selector
  */
-function handle_tabs(selector) {
+function handle_tabs(selector, results_folder_id) {
     let tabs = document.getElementsByClassName("tab");
     let editors = document.getElementsByClassName("editor");
     Array.from(tabs).forEach((tab, index) => {
@@ -198,7 +199,44 @@ function handle_tabs(selector) {
                 })(),
             ]);
             const build_data = new BuildData(template_fields_names, data_source_data);
-            build_editor.appendChild(build_data.get_table());
+            const build_table = build_data.get_table();
+            build_editor.appendChild(build_table);
+
+            const build_button = createElement("button", "", ["red"], "Build");
+            build_button.addEventListener("click", async () => {
+                popup("Processing...", "Please wait");
+                await popup("Processing...", "Please wait", "p", (async () => {
+                    let build_table_data = {};
+                    for (const tr of Array.from(build_table.getElementsByTagName("tr")).slice(1)) {
+                        const key = tr.getElementsByTagName("td")[0].innerHTML;
+                        const select = tr.getElementsByTagName("select")[0];
+                        if (select.value.startsWith("data_source"))
+                            build_table_data[key] = {column: select.value}
+                        else if (select.value === "macros:today")
+                            build_table_data[key] = {literal: tr.getElementsByTagName("td")[2].innerHTML}
+                        else if (select.value === "etc:literal")
+                            build_table_data[key] = {literal: tr.getElementsByTagName("input")[0].value};
+                    };
+                    let ws = new WebSocket(WS_URL);
+                    ws.addEventListener("open", async () => {
+                        ws.send(JSON.stringify({
+                            data_source_uid: selector.selected_data_source,
+                            access_token: gapi.auth.getToken().access_token,
+                            template_id: selector.selected_document,
+                            parent_folder_id: results_folder_id,
+                            data: build_table_data,
+                        }));
+                    });
+                    ws.addEventListener("message", async msg => {
+                        let previous_popup = document.getElementById("popup_container");
+                        if (previous_popup) previous_popup.remove();
+                        await popup("Processing...", msg.data, "p", new Promise(resolve => {}));
+                        console.log(msg.data);
+                    });
+                    ws.addEventListener("close", () => location.reload());
+                })());
+            });
+            build_editor.appendChild(createElement("div", "", [], "", [build_button]));
         })());
     });
     document.getElementById("build").addEventListener("click", () => tabs[2].click());
@@ -664,13 +702,13 @@ window.addEventListener("load", async () => {
 
         // sync part
         const selector = new DocumentAndDataSourceSelector();
-        handle_tabs(selector);
         handle_add_data_source();
 
         // async part
         await Promise.all([
             (async () => {
                 const folder_ids = await basic_layout_in_google_drive();
+                handle_tabs(selector, folder_ids.results);
                 handle_upload_file(folder_ids.raw_docs);
                 await list_documents(selector, folder_ids);
             })(),

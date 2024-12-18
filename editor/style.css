@@ -283,6 +283,7 @@ button#selected {
 
 div#build_editor.active {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     padding: 10px;
 }
@@ -310,6 +311,11 @@ div#build_editor table th {
 }
 div#build_editor table td {
     font-size: 24px;
+}
+div#build_editor > div {
+    width: 100%;
+    padding-top: 20px;
+    text-align: center;
 }
 
 
